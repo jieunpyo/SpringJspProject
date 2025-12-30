@@ -10,7 +10,7 @@ spring:
     username: hr
     password: happy
     driver-class-name: oracle.jdbc.OracleDriver
-    type: com.zaxxer.hikari/HikariDataSource
+    type: com.zaxxer.hikari.HikariDataSource
     hikari:
       minimum-idle: 5
       maximum-pool-size: 10
