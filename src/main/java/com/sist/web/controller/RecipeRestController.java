@@ -48,7 +48,7 @@ public class RecipeRestController {
    // Vue로 값 전송 => router
    @GetMapping("/recipe/detail_vue/")
    public ResponseEntity<Map> recipe_detail(
-	 @RequestParam("no") int no
+     @RequestParam("no") int no
    )
    {
 	   Map map=new HashMap();

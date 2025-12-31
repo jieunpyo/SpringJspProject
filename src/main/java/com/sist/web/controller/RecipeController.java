@@ -1,4 +1,3 @@
-
 package com.sist.web.controller;
 
 import org.springframework.stereotype.Controller;
@@ -19,7 +18,7 @@ public class RecipeController {
    }
    @GetMapping("/detail")
    public String detail_page(
-	 @RequestParam("no") int no
+     @RequestParam("no") int no
    )
    {
 	   return "recipe/detail";

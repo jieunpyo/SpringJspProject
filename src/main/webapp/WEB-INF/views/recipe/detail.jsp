@@ -27,10 +27,13 @@ p {
   cursor: pointer;
 }
 </style>
+<script>
+const SESSION_ID='${sessionScope.id}'
+</script>
 </head>
 <body>
-   <div class="container">
-     <div class="row" id="recipe_detail">
+   <div class="container" id="recipe_detail">
+     <div class="row">
        <table class="table">
         <tbody>
           <tr>
@@ -50,13 +53,22 @@ p {
           </tr>
           <tr>
             <td class="text-center"><img src="/images/a1.png"></td>
-            <td class="text-center"><img src="/images/a1.png"></td>
-            <td class="text-center"><img src="/images/a1.png"></td>
+            <td class="text-center"><img src="/images/a2.png"></td>
+            <td class="text-center"><img src="/images/a3.png"></td>
           </tr>
           <tr>
             <td class="text-center">{{store.detail.vo.info1}}</td>
             <td class="text-center">{{store.detail.vo.info2}}</td>
             <td class="text-center">{{store.detail.vo.info3}}</td>
+          </tr>
+          <tr>
+            <td class="text-right" colspan="3">
+              <button type=button class="btn-sm btn-primary"
+              >예약(FullCalendar)</button>
+              <button type=button class="btn-sm btn-danger"
+               onclick="javascript:history.back()"
+              >목록</button>
+            </td>
           </tr>
         </tbody>
        </table>
@@ -68,17 +80,8 @@ p {
            <tr v-for="(data,index) in store.detail.tList">
              <td class="text-left" width=85%>{{data}}</td>
              <td class="text-right" width=15%>
-             <img :src="store.detail.iList[index]" style="width: 180px;height: 60px"></td>
+              <img :src="store.detail.iList[index]" style="width: 180px;height: 100px"></td>
            </tr>
-           <tr>
-            <td class="text-right" colspan="3">
-              <button type=button class="btn-sm btn-primary"
-              >예약(FullCalendar)</button>
-              <button type=button class="btn-sm btn-danger"
-               onclick="javascript:history.back()"
-              >목록</button>
-            </td>
-          </tr>
          </tbody>
        </table>
        <table class="table">
@@ -101,32 +104,70 @@ p {
        </table>
      </div>
      <div class="row" style="margin-top: 20px" id="recipe_reply">
-       
+       <table class="table">
+        <tbody>
+          <tr>
+           <td>
+             <table class="table" v-for="(rvo,index) in rStore.reply_list" :key="index">
+              <tbody>
+                <tr>
+                 <td class="text-left">◑{{rvo.name}} &nbsp; {{rvo.dbday}}</td>
+                 <td class="text-right"></td>
+                </tr>
+                <tr>
+                  <td colspan="2" class="text-left">
+                    <pre style="white-space: pre-wrap;">{{rvo.msg}}</pre>
+                  </td>
+                </tr>
+              </tbody>
+             </table>
+           </td>
+          </tr>
+        </tbody>
+       </table>
+       <table class="table" v-if="rStore.sessionId">
+         <tbody>
+          <tr>
+           <td>
+            <textarea rows="5" cols="100" style="float: left" v-model="rStore.msg"></textarea>
+            <button type="button" class="btn-success"
+             style="width: 100px;height: 102px;float: left"
+             @click="rStore.replyInsert()"
+             >댓글쓰기</button>
+           </td>
+          </tr>
+         </tbody>
+       </table>
      </div>
    </div>
-  <script src="/js/axios.js"></script>
-  <script src="/js/recipeStore.js"></script>
-  <script type="text/javascript">
-   const {createApp,onMounted} = Vue
-   const {createPinia} = Pinia
-   const detailApp=createApp({
-	   setup(){
-		   const store=useRecipeStore();
-		   const params=new URLSearchParams(location.search)
-  		   const no=params.get('no')
-  		   
-  		   onMounted(()=>{
-  			   store.recipeDetailData(no)
-  		   })
-  		   
-  		   return {
-			   store
-		   }
-	   }
-   })
-   detailApp.use(createPinia())
-   detailApp.mount("#recipe_detail")
-   
-  </script>
+   <script src="/js/axios.js"></script>
+   <script src="/js/recipeStore.js"></script>
+   <script src="/js/replyStore.js"></script>
+   <script type="text/javascript">
+    const {createApp,onMounted} = Vue
+    const {createPinia} = Pinia
+    const detailApp=createApp({
+    	setup(){
+        	const store=useRecipeStore();
+        	const rStore=useReplyStore();
+        	
+        	const params=new URLSearchParams(location.search)
+   		    const no=params.get('no')
+   		    
+   		    onMounted(()=>{
+   		    	store.recipeDetailData(no)
+   		    	rStore.sessionId=SESSION_ID
+   		    	rStore.replyListData(no)
+   		    })
+   		    
+   		    return {
+        		store,
+        		rStore
+        	}
+        }
+    })
+    detailApp.use(createPinia())
+    detailApp.mount("#recipe_detail")
+   </script>
 </body>
 </html>

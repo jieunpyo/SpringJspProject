@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,9 +12,7 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <style type="text/css">
-.container{
-  margin-top: 50px;
-}
+
 .row {
   margin: 0px auto;
   width: 960px
@@ -29,11 +28,21 @@ p {
 </style>
 </head>
 <body>
-  <div class="container">
+  <div class="container" style="margin-top: 10px">
+    <div class="row text-right">
+     <c:if test="${sessionScope.id==null }">
+      <a href="/member/login" class="btn btn-sm btn-danger">로그인</a>
+     </c:if>
+     <c:if test="${sessionScope.id!=null }">
+      <a href="/member/logout" class="btn btn-sm btn-success">로그아웃</a>
+     </c:if>
+    </div>
+  </div>
+  <div class="container" id="list_app" style="margin-top: 30px">
    <div class="row">
      <div class="col-md-3" v-for="(vo,index) in store.list" :key="index">
 	    <div class="thumbnail">
-	      <a :href="`/detail?no=`+vo.no">
+	      <a :href="'/detail?no='+vo.no">
 	        <img :src="vo.poster" :title="vo.title" style="width:240px;height: 150px">
 	        <div class="caption">
 	          <p>{{vo.chef}}</p>
@@ -41,13 +50,13 @@ p {
 	      </a>
 	    </div>
 	  </div>
-	  <div class="row text-center" style="margin-top: 10px">
+   </div>
+   <div class="row text-center" style="margin-top: 10px">
      <ul class="pagination">
        <li v-if="store.startPage>1"><a class="nav-link" @click="store.movePage(store.startPage-1)">&laquo;</a></li>
        <li v-for="i in store.range" :class="i===store.curpage?'active':''"><a class="nav-link" @click="store.movePage(i)">{{i}}</a></li>
        <li v-if="store.endPage<store.totalpage"><a class="nav-link" @click="store.movePage(store.endPage+1)">&raquo;</a></li>
      </ul>
-   </div>
    </div>
   </div>
   <script src="/js/axios.js"></script>
@@ -70,7 +79,7 @@ p {
 	   }
    })
    recipeApp.use(createPinia())
-   recipeApp.mount(".container")
+   recipeApp.mount("#list_app")
   </script>
 </body>
 </html>
